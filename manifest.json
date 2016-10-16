@@ -1,17 +1,37 @@
 {
-  "manifest_version": 2,
-  "name": "Data Usage Tracking",
-  "description": "This extensions tracks you current data usage and give stats to user.",
-  "version": "1.0",
-  "minimum_chrome_version": "10.0",
-  "devtools_page": "devtools.html",
-  "icons": {
-    "16": "images/icon.png",
-    "48": "images/icon_m.png",
-    "128":"images/icon_m.png"
-  },
-  "browser_action": {
-    "default_icon": "images/icon.png",
-    "default_popup": "popup.html"
-  }
+	"manifest_version": 2,
+	"name": "Data Usage Tracking",
+	"description": "This extensions tracks you current data usage and give stats to user.",
+	"version": "1.0",
+	"minimum_chrome_version": "10.0",
+	"devtools_page": "devtools.html",
+	"permissions": [
+		"tabs",
+		"webRequest",
+		"http://*/*",
+		"https://*/*"
+	],
+	"content_scripts": [
+		{
+			"matches": ["http://*/*", "https://*/*"],
+			"css": ["stylesheets/main.css"],
+			"js": [
+				"javascripts/jquery-3.1.1.min.js",
+				"javascripts/content_script.js"
+			],
+			"run_at": "document_start"
+		}
+	],
+	"background": {
+		"scripts": ["javascripts/background.js"]
+	},
+	"icons": {
+		"16": "images/icon.png",
+		"48": "images/icon_m.png",
+		"128":"images/icon_m.png"
+	},
+	"browser_action": {
+		"default_icon": "images/icon.png",
+		"default_popup": "popup.html"
+	}
 }

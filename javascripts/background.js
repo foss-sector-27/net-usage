@@ -2,6 +2,12 @@
 
 	var tabs_data_usage = {};
 
+	/*
+	 * This is not the complete solution as it misses our the header data and looks only at body data
+	 * Also this will miss out on the sockets data and also data where content-length is not defined
+	 * or sent by the server.
+	 * TODO: Search how to fix the above listed problems
+	 */
 	chrome.webRequest.onCompleted.addListener(function(details) {
 		tabId = details.tabId;
 		if(tabId < 0) {

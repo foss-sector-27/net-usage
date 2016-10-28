@@ -12,8 +12,6 @@
 	$(document).mousemove(function(e) {
 		var pointer_left = e.pageX;
 		var pointer_top = e.pageY - $(window).scrollTop();
-		console.log(pointer_left, left, left + width, "=============", pointer_top, top, top + height);
-		console.log($(window).scrollTop());
 		if (pointer_left > left && pointer_left < (left + width)
 			&& pointer_top > top && pointer_top < (top + height)) {
 			$("#net_usage").hide();

@@ -1,0 +1,11 @@
+body {
+	width: 150px;
+}
+
+.total_usage span {
+	font-weight:bold;
+}
+
+.tab_usage span {
+	font-weight:bold;
+}

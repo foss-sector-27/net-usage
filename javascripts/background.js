@@ -1,6 +1,21 @@
 (function () {
 
 	var tabs_data_usage = {};
+	var total_usage = 0;
+
+	function formatDataUsage(data_usage) {
+		var unit = "";
+		if(data_usage < 1024) {
+			unit = "B";
+		} else if (data_usage < 1*1024*1024) {
+			data_usage = data_usage/1024;
+			unit = "KB";
+		} else {
+			data_usage = data_usage/1024/1024;
+			unit = "MB";
+		}
+		return data_usage.toFixed(2) + " " + unit;
+	}
 
 	/*
 	 * This is not the complete solution as it misses our the header data and looks only at body data
@@ -19,34 +34,30 @@
 					typeof tabs_data_usage[tabId] === "undefined" ?
 					parseInt(details.responseHeaders[i].value) :
 					parseInt(details.responseHeaders[i].value) + tabs_data_usage[tabId];
+				total_usage += tabs_data_usage[tabId]
 			}
 		}
 		if(typeof tabs_data_usage[tabId] !== "undefined") {
-			var data_usage = tabs_data_usage[tabId];
-			var unit = "";
-			if(data_usage < 1024) {
-				unit = "B";
-			} else if (data_usage < 1*1024*1024) {
-				data_usage = data_usage/1024;
-				unit = "KB";
-			} else {
-				data_usage = data_usage/1024/1024;
-				unit = "MB";
-			}
-			var message = data_usage.toFixed(2) + " " + unit;
-			chrome.tabs.sendMessage(tabId, message);
+			chrome.tabs.sendMessage(tabId, formatDataUsage(tabs_data_usage[tabId]));
 		}
 	}, {
 	    urls: ["<all_urls>"]
 	}, ['responseHeaders']);
 
-	chrome.tabs.onRemoved(function(tabId) {
-		delete(tabs_data_usage[tabId]);
+	chrome.extension.onConnect.addListener(function(port) {
+		port.onMessage.addListener(function(tab) {
+			var message = {
+				tab_usage: formatDataUsage(tabs_data_usage[tab.id]),
+				total_usage: formatDataUsage(total_usage)
+			};
+			port.postMessage(message);
+		});
 	});
 
 	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+		console.log(tabId, changeInfo);
 		if(typeof changeInfo.url === "undefined") {
-			delete(tabs_data_usage[tabId]);
+			// delete(tabs_data_usage[tabId]);
 		}
 	});
 

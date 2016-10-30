@@ -16,7 +16,6 @@
 			"matches": ["http://*/*", "https://*/*"],
 			"css": ["stylesheets/main.css"],
 			"js": [
-				"javascripts/jquery-3.1.1.min.js",
 				"javascripts/content_script.js"
 			],
 			"run_at": "document_start"

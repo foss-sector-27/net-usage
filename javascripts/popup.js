@@ -9,8 +9,8 @@
 	});
 
 	port.onMessage.addListener(function(data) {
-		$(".tab_usage span").html(data.tab_usage);
-		$(".total_usage span").html(data.total_usage);
+		document.getElementsByClassName("tab_usage")[0].children[0].innerHTML = data.tab_usage;
+ 		document.getElementsByClassName("total_usage")[0].children[0].innerHTML = data.total_usage;
 	});
 
 })();

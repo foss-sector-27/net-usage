@@ -1,34 +1,43 @@
 (function() {
-	var main_container = '<div id="net_usage"></div>';
+    var node = document.createElement("div");
+    node.id = "net_usage"
+    document.getElementsByTagName("html")[0].appendChild(node)
 
-	$("html").append(main_container);
+    var offset;
+    var top;
+    var left;
+    var height;
+    var width;
+    updateBoxSize();
 
-	var offset = $("#net_usage").offset();
-	var top = offset.top - 10;
-	var left = offset.left - 10;
-	var height = $("#net_usage").height() + 24;
-	var width = $("#net_usage").width() + 34;
+    document.addEventListener("mousemove", function(e) {
+        var pointer_left = e.pageX;
+        var pointer_top = e.pageY - document.body.scrollTop;
+        var ele = document.getElementById("net_usage")
+//        console.log(pointer_left, left, left + width, '===========================', pointer_top, top, top + height);
+        if (pointer_left > left && pointer_left < (left + width)
+            && pointer_top > top && pointer_top < (top + height)) {
+            ele.className = "hidden";
+        } else {
+            updateBoxSize();
+            ele.className = "";
+        }
+    });
 
-	$(document).mousemove(function(e) {
-		var pointer_left = e.pageX;
-		var pointer_top = e.pageY - $(window).scrollTop();
-		if (pointer_left > left && pointer_left < (left + width)
-			&& pointer_top > top && pointer_top < (top + height)) {
-			$("#net_usage").hide();
-		} else {
-			$("#net_usage").show();
-		}
-	});
+    chrome.runtime.onMessage.addListener(function(message) {
+        var ele = document.getElementById("net_usage");
+        if(ele !== null) {
+            ele.innerHTML = message;
+            updateBoxSize();
+        }
+    });
 
-	chrome.runtime.onMessage.addListener(function(message) {
-		if($("#net_usage").length) {
-			$("#net_usage").html(message);
-			offset = $("#net_usage").offset();
-			top = offset.top - 10;
-			left = offset.left - 10;
-			height = $("#net_usage").height() + 24;
-			width = $("#net_usage").width() + 34;
-		}
-	});
+    function updateBoxSize() {
+        var ele = document.getElementById("net_usage");
+        top = ele.offsetTop - 10;
+        left = ele.offsetLeft - 20;
+        height = ele.offsetHeight + 34;
+        width = ele.offsetWidth + 44;
+    }
 
 })()
